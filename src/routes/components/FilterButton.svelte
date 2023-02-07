@@ -1,13 +1,14 @@
 <script>
 	// Every time a user clicks on a button the filter variable gets updated
+	// UPDATE: just use binding
 	export let filter = 'all';
-	// Whenever filter is modified this function gets triggered because of reactivity
-	$: onclick(filter);
+	// // Whenever filter is modified this function gets triggered because of reactivity
+	// $: onclick(filter);
 
-	// In our case, the FilterButton component will receive an onclick handler from its parent. 
-	// Whenever the user clicks on any filter button, the child will call the onclick handler, 
-	// passing the selected filter as a parameter back up to its parent.
-	export let onclick = (clicked) => {};
+	// // In our case, the FilterButton component will receive an onclick handler from its parent. 
+	// // Whenever the user clicks on any filter button, the child will call the onclick handler, 
+	// // passing the selected filter as a parameter back up to its parent.
+	// export let onclick = (clicked) => {};
 </script>
 
 <!-- Filter -->

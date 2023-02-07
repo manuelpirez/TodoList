@@ -67,12 +67,8 @@
 	<!-- onclick is a function that comes from the filterButton component -->
 	<!-- When the action is triggered filter is defined with the value of clicked that is what we defined as a parameter on FilterButton component -->
 	<!-- this updates the value and trigger all the reactivity functions related or that use the filter var -->
-	<FilterButton
-		{filter}
-		onclick={(clickedFilter) => {
-			filter = clickedFilter;
-		}}
-	/>
+	<!-- UPDATE: avoid sharing handlers, instead use bind, the variable on the child and parent component must have the same name -->
+	<FilterButton bind:filter/>
 
 	<!-- TodosStatus -->
 	<h2 id="list-heading">
