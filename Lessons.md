@@ -16,3 +16,16 @@ To recap, we covered the following topics:
 -    Triggering reactivity with assignments
 -    Using reactive expressions to filter data
 -    Explicitly defining our reactive dependencies
+
+
+# Session 2 Summary 
+Now we have all of our app's required functionality in place. We can display, add, edit, and delete to-dos, mark them as completed, and filter by status.
+
+In this article, we covered the following topics:
+
+-    Extracting functionality to a new component
+-    Passing information from child to parent using a handler received as a prop
+-    Passing information from child to parent using the bind directive
+-    Conditionally rendering blocks of markup using the if block
+-    Implementing the "props-down, events-up" communication pattern
+-    Creating and listening to custom events

@@ -1,5 +1,6 @@
 <script>
 	import FilterButton from './FilterButton.svelte';
+	import Todo from './Todo.svelte';
 	/**
 	 * This is how we tell svelte that this component accepts a prop & is open for business
 	 * @type {any[]}
@@ -29,6 +30,11 @@
 		todos = [...todos, { id: newTodoId, name: newTodoName, completed: false }];
 		//By using the spread syntax (...todos) instead of push() we avoid mutating the array, which is considered a good practice.
 		newTodoName = ''; // clears the newTodoName value to reset the input
+	};
+
+	const updateTodo = (todo) => {
+		const i = todos.findIndex((t) => t.id === todo.id);
+		todos[i] = { ...todos[i], ...todo };
 	};
 
 	// Filters
@@ -68,7 +74,7 @@
 	<!-- When the action is triggered filter is defined with the value of clicked that is what we defined as a parameter on FilterButton component -->
 	<!-- this updates the value and trigger all the reactivity functions related or that use the filter var -->
 	<!-- UPDATE: avoid sharing handlers, instead use bind, the variable on the child and parent component must have the same name -->
-	<FilterButton bind:filter/>
+	<FilterButton bind:filter />
 
 	<!-- TodosStatus -->
 	<h2 id="list-heading">
@@ -79,32 +85,15 @@
 	<ul role="list" class="todo-list stack-large" aria-labelledby="list-heading">
 		<!-- The second parameter, (todo.id) will contain the index of the current item. Also, a key expression can be provided, which will uniquely identify each item. Svelte will use it to diff the list when data changes, rather than adding or removing items at the end, and it's a good practice to always specify one. -->
 		{#each filterTodos(filter, todos) as todo (todo.id)}
-			<!-- Filter todos function returns an filtered array based on the "filter" condition -->
 			<li class="todo">
-				<div class="stack-small">
-					<div class="c-cb">
-						<input
-							type="checkbox"
-							id="todo-{todo.id}"
-							on:click={() => (todo.completed = !todo.completed)}
-							checked={todo.completed}
-						/>
-						<!-- since the list obj is defined on every <li> iteration, we can directly modify/access its contents -->
-						<!-- this will perform the regular cascade effect seen above -->
-						<label for="todo-{todo.id}" class="todo-label"> {todo.name} </label>
-					</div>
-					<div class="btn-group">
-						<button type="button" class="btn">
-							Edit <span class="visually-hidden">{todo.name}</span>
-						</button>
-						<button type="button" class="btn btn__danger" on:click={() => deleteTask(todo)}>
-							Delete <span class="visually-hidden">{todo.name}</span>
-						</button>
-					</div>
-				</div>
+				<Todo
+					{todo}
+					on:update={(e) => updateTodo(e.detail)}
+					on:delete={(e) => deleteTask(e.detail)}
+				/>
 			</li>
 		{:else}
-			<li>Nothing to do here! Day off!</li>
+			<li>Nothing to do here!</li>
 		{/each}
 	</ul>
 
