@@ -5,6 +5,8 @@
 	import NewTodo from './NewTodo.svelte';
 	import TodosStatus from './TodoStatus.svelte';
 
+	import { alert } from '../../store/stores.js';
+
 	/**
 	 * This is how we tell svelte that this component accepts a prop & is open for business
 	 * @type {any[]}
@@ -18,7 +20,6 @@
 	// Reactivity zone
 	// $: newTodoId = totalTodos ? todos.length + 1 : 1; // Here we map todos to get an array with all the IDs and the use Math.max to get the last ID and then add 1
 	$: newTodoId = todos.length ? Math.max(...todos.map((t) => t.id)) + 1 : 1;
-
 	//  Unnecessary logging - This browser log should be triggered any time the declared variables are modified
 	$: console.log('newTodoName: ', newTodoName);
 	$: console.log('todoList: ', todos);
@@ -27,10 +28,9 @@
 	const deleteTask = (todo) => {
 		todos = todos.filter((t) => t.id !== todo.id); // uses filter function to loop over the todoList, eval the given obj id and return a new array without the "todo" to be removed
 		// since this function is dependent on todos, all the reactivity functions that are linked or dependant on todos, will be triggered, as an inverse cascade effect
-
 		todosStatus.focus(); // give focus to status heading
+		$alert = `Todo '${todo.name}' has been deleted`
 	};
-
 	// Uses name from NewTodo component
 	const addTask = (name) => {
 		//We do this because Objs Cannot have duplicate keys in a keyed each.
@@ -41,14 +41,31 @@
 		//  newTodo
 		// assign a new value to todos, with a copy of the old todos, and a new object
 		todos = [...todos, { id: newTodoId, name, completed: false }];
+		$alert = `Todo '${name}' has been added`
 	};
 	const updateTodo = (todo) => {
 		const i = todos.findIndex((t) => t.id === todo.id);
+
+		// todos[i].name !== todo.name && (() => $alert = `todo '${todos[i].name}' has been renamed to '${todo.name}'`)()
+		// Or for readability
+		if (todos[i].name !== todo.name)	$alert = `todo '${todos[i].name}' has been renamed to '${todo.name}'`
+		if (todos[i].completed !== todo.completed)	$alert = `todo '${todos[i].name}' marked as ${todo.completed ? 'completed' : 'active'}`
+
 		todos[i] = { ...todos[i], ...todo };
 	};
 	// Filters
 	// https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Client-side_JavaScript_frameworks/Svelte_variables_props#sect7
 	let filter = 'all'; //  Svelte analyzes our code to find out dependencies, so it's better to be explicit about it and not rely on the visibility of top-level variables.
+	$: {
+		if (filter === 'all') {
+			$alert = 'Browsing all to-dos';
+		} else if (filter === 'active') {
+			$alert = 'Browsing active to-dos';
+		} else if (filter === 'completed') {
+			$alert = 'Browsing completed to-dos';
+		}
+	}
+
 	const filterTodos = (
 		filter,
 		todos // a function to filter our tasks by status
@@ -62,12 +79,15 @@
 	// loops over all todos, and mark all the "completed" Key, to the value of MoreActions completed = true || false
 	const checkAllTodos = (completed) => {
 		todos = todos.map((t) => ({ ...t, completed }));
+		$alert = `${completed ? 'Checked' : 'Unchecked'} ${todos.length} to-dos`
 	};
 
 	// return an array with all the todos = !true
-	const removeCompletedTodos = () => (todos = todos.filter((t) => !t.completed));
+	const removeCompletedTodos = () => {
+		$alert = `Removed ${todos.filter((t) => t.completed).length} to-dos`
+		todos = todos.filter((t) => !t.completed)
+	};
 </script>
-
 <!-- Todos.svelte -->
 <div class="todoapp stack-large">
 	<!-- NewTodo -->
