@@ -1,4 +1,5 @@
 <script>
+	import { selectOnFocus, focusOnInit } from '../../util/actions';
 	import { createEventDispatcher, tick } from 'svelte';
 	const dispatch = createEventDispatcher();
 
@@ -9,6 +10,7 @@
 
 	let nameEl; // reference to the name input DOM node
 	let editing = false; // track editing mode
+	let editButtonPressed = false; // track if edit button has been pressed, to give focus to it after cancel or save
 	let name = todo.name; // hold the name of the to-do being edited
 
 	// CRUD
@@ -28,13 +30,19 @@
 		dispatch('delete', todo); // emit delete event
 	}
 	async function onEdit() {
+		editButtonPressed = true; // user pressed the Edit button, focus will come back to the Edit button
 		editing = true; // enter editing mode
-		await tick();
-		nameEl.focus(); // set focus to name input
+
+		// thanks to focusOnInit this is not necessary
+		// await tick();
+		// nameEl.focus(); // set focus to name input
 	}
 	function onToggle() {
 		update({ completed: !todo.completed }); // updates todo status
 	}
+
+	// use actions
+	const focusEditButton = (node) => editButtonPressed && node.focus();
 </script>
 
 <div class="stack-small">
@@ -50,11 +58,18 @@
 				<input
 					bind:value={name}
 					bind:this={nameEl}
+					use:selectOnFocus
+					use:focusOnInit
 					type="text"
 					id="todo-{todo.id}"
 					autoComplete="off"
 					class="todo-text"
 				/>
+				<!-- use:selecOnFocus With this directive we are telling Svelte to run this function, 
+					passing the DOM node of the <input> as a parameter, as soon as the component is mounted 
+					on the DOM. It will also be in charge of executing the destroy function when the 
+					component is removed from DOM. So with the use directive, Svelte takes care of the 
+					omponent's lifecycle for us. -->
 			</div>
 			<div class="btn-group">
 				<button class="btn todo-cancel" on:click={onCancel} type="button">
@@ -72,7 +87,7 @@
 			<label for="todo-{todo.id}" class="todo-label">{todo.name}</label>
 		</div>
 		<div class="btn-group">
-			<button type="button" class="btn" on:click={onEdit}>
+			<button type="button" class="btn" on:click={onEdit} use:focusEditButton>
 				Edit<span class="visually-hidden"> {todo.name}</span>
 			</button>
 			<button type="button" class="btn btn__danger" on:click={onDelete}>
