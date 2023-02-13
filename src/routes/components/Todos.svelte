@@ -1,12 +1,13 @@
 <script>
 	import FilterButton from './FilterButton.svelte';
 	import Todo from './Todo.svelte';
+	import MoreActions from './MoreActions.svelte';
+
 	/**
 	 * This is how we tell svelte that this component accepts a prop & is open for business
 	 * @type {any[]}
 	 */
 	export let todos = [];
-
 	// Define initial state vars
 	let newTodoName = '';
 
@@ -31,12 +32,10 @@
 		//By using the spread syntax (...todos) instead of push() we avoid mutating the array, which is considered a good practice.
 		newTodoName = ''; // clears the newTodoName value to reset the input
 	};
-
 	const updateTodo = (todo) => {
 		const i = todos.findIndex((t) => t.id === todo.id);
 		todos[i] = { ...todos[i], ...todo };
 	};
-
 	// Filters
 	// https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Client-side_JavaScript_frameworks/Svelte_variables_props#sect7
 	let filter = 'all'; //  Svelte analyzes our code to find out dependencies, so it's better to be explicit about it and not rely on the visibility of top-level variables.
@@ -49,6 +48,14 @@
 			: filter === 'completed'
 			? todos.filter((t) => t.completed) // returns all completed = true
 			: todos; // everything else
+
+	// loops over all todos, and mark all the "completed" Key, to the value of MoreActions completed = true || false
+	const checkAllTodos = (completed) => {
+		todos = todos.map((t) => ({ ...t, completed }));
+	};
+
+	// return an array with all the todos = !true
+	const removeCompletedTodos = () => (todos = todos.filter((t) => !t.completed));
 </script>
 
 <!-- Todos.svelte -->
@@ -100,8 +107,12 @@
 	<hr />
 
 	<!-- MoreActions -->
-	<div class="btn-group">
-		<button type="button" class="btn btn__primary">Check all</button>
-		<button type="button" class="btn btn__primary">Remove completed</button>
-	</div>
+	<!-- We created two custom events checkAll & removeCompleted on MoreActions -->
+	<!-- That way we can cleanly access them as an on:event action on another component -->
+	<!-- Then we attached an action defined on the parent component to interact with the local variables -->
+	<!-- todos = we are passing the todos array to the MoreActions component to check state and react accordingly (enable disabe buttons if al tasks are completed) -->
+	<MoreActions {todos}
+		on:checkAll={(e) => checkAllTodos(e.detail)}
+		on:removeCompleted={removeCompletedTodos}
+	/>
 </div>
