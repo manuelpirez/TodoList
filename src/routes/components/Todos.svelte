@@ -2,6 +2,7 @@
 	import FilterButton from './FilterButton.svelte';
 	import Todo from './Todo.svelte';
 	import MoreActions from './MoreActions.svelte';
+	import NewTodo from './NewTodo.svelte';
 
 	/**
 	 * This is how we tell svelte that this component accepts a prop & is open for business
@@ -26,11 +27,17 @@
 		todos = todos.filter((t) => t.id !== todo.id); // uses filter function to loop over the todoList, eval the given obj id and return a new array without the "todo" to be removed
 		// since this function is dependent on todos, all the reactivity functions that are linked or dependant on todos, will be triggered, as an inverse cascade effect
 	};
-	const addTask = () => {
+
+	// Uses name from NewTodo component
+	const addTask = (name) => {
 		//We do this because Objs Cannot have duplicate keys in a keyed each.
-		todos = [...todos, { id: newTodoId, name: newTodoName, completed: false }];
+		// todos = [...todos, { id: newTodoId, name: newTodoName, completed: false }];
 		//By using the spread syntax (...todos) instead of push() we avoid mutating the array, which is considered a good practice.
-		newTodoName = ''; // clears the newTodoName value to reset the input
+		// newTodoName = ''; // clears the newTodoName value to reset the input
+
+		//  newTodo
+		// assign a new value to todos, with a copy of the old todos, and a new object
+		todos = [...todos, { id: newTodoId, name, completed: false }];
 	};
 	const updateTodo = (todo) => {
 		const i = todos.findIndex((t) => t.id === todo.id);
@@ -61,20 +68,7 @@
 <!-- Todos.svelte -->
 <div class="todoapp stack-large">
 	<!-- NewTodo -->
-
-	<!-- The on:eventname directive supports adding modifiers to the DOM event with the | character. In this case, the preventDefault modifier tells Svelte to generate the code to call event.preventDefault() before running the handler. -->
-	<!-- https://svelte.dev/docs#on_element_event -->
-	<form on:submit|preventDefault={addTask}>
-		<h2 class="label-wrapper">
-			<label for="todo-0" class="label__lg"> What needs to be done? </label>
-		</h2>
-		<!-- Binding https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Client-side_JavaScript_frameworks/Svelte_variables_props#adding_new_to-dos -->
-		<!-- https://svelte.dev/docs#bind_element_property -->
-		<!-- binding will trigger inverse cascade effect on all the reactivity linked variables or functions -->
-		<!-- Svelte provides an easier way to bind any property to a variable, using the bind:property directive -->
-		<input bind:value={newTodoName} type="text" id="todo-0" autocomplete="off" />
-		<button type="submit" disabled="" class="btn btn__primary btn__lg"> Add </button>
-	</form>
+	<NewTodo autofocus on:addTodo={(e) => addTask(e.detail)} />
 
 	<!-- Filter -->
 	<!-- onclick is a function that comes from the filterButton component -->
@@ -111,7 +105,8 @@
 	<!-- That way we can cleanly access them as an on:event action on another component -->
 	<!-- Then we attached an action defined on the parent component to interact with the local variables -->
 	<!-- todos = we are passing the todos array to the MoreActions component to check state and react accordingly (enable disabe buttons if al tasks are completed) -->
-	<MoreActions {todos}
+	<MoreActions
+		{todos}
 		on:checkAll={(e) => checkAllTodos(e.detail)}
 		on:removeCompleted={removeCompletedTodos}
 	/>

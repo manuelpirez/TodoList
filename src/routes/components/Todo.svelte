@@ -1,5 +1,5 @@
 <script>
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, tick } from 'svelte';
 	const dispatch = createEventDispatcher();
 
 	/**
@@ -7,6 +7,7 @@
 	 */
 	export let todo;
 
+	let nameEl; // reference to the name input DOM node
 	let editing = false; // track editing mode
 	let name = todo.name; // hold the name of the to-do being edited
 
@@ -26,8 +27,10 @@
 	function onDelete() {
 		dispatch('delete', todo); // emit delete event
 	}
-	function onEdit() {
+	async function onEdit() {
 		editing = true; // enter editing mode
+		await tick();
+		nameEl.focus(); // set focus to name input
 	}
 	function onToggle() {
 		update({ completed: !todo.completed }); // updates todo status
@@ -46,6 +49,7 @@
 				<label for="todo-{todo.id}" class="todo-label">New name for '{todo.name}'</label>
 				<input
 					bind:value={name}
+					bind:this={nameEl}
 					type="text"
 					id="todo-{todo.id}"
 					autoComplete="off"
