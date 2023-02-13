@@ -3,20 +3,21 @@
 	import Todo from './Todo.svelte';
 	import MoreActions from './MoreActions.svelte';
 	import NewTodo from './NewTodo.svelte';
+	import TodosStatus from './TodoStatus.svelte';
 
 	/**
 	 * This is how we tell svelte that this component accepts a prop & is open for business
 	 * @type {any[]}
 	 */
 	export let todos = [];
+
 	// Define initial state vars
 	let newTodoName = '';
+	let todosStatus; // reference to TodosStatus instance
 
 	// Reactivity zone
-	$: totalTodos = todos.length; // Everytime todos[] is updated anywhere redefine totalTodos with todos.length value
-	// $: newTodoId = totalTodos ? Math.max(...todos.map((t) => t.id)) + 1 : 1; // Here we map todos to get an array with all the IDs and the use Math.max to get the last ID and then add 1
-	$: newTodoId = totalTodos ? todos.length + 1 : 1; // Here we map todos to get an array with all the IDs and the use Math.max to get the last ID and then add 1
-	$: completedTodos = todos.filter((todo) => todo.completed).length; // loops over todos array to get an array with the completed tasks, and then gets the array length
+	// $: newTodoId = totalTodos ? todos.length + 1 : 1; // Here we map todos to get an array with all the IDs and the use Math.max to get the last ID and then add 1
+	$: newTodoId = todos.length ? Math.max(...todos.map((t) => t.id)) + 1 : 1;
 
 	//  Unnecessary logging - This browser log should be triggered any time the declared variables are modified
 	$: console.log('newTodoName: ', newTodoName);
@@ -26,6 +27,8 @@
 	const deleteTask = (todo) => {
 		todos = todos.filter((t) => t.id !== todo.id); // uses filter function to loop over the todoList, eval the given obj id and return a new array without the "todo" to be removed
 		// since this function is dependent on todos, all the reactivity functions that are linked or dependant on todos, will be triggered, as an inverse cascade effect
+
+		todosStatus.focus(); // give focus to status heading
 	};
 
 	// Uses name from NewTodo component
@@ -78,9 +81,7 @@
 	<FilterButton bind:filter />
 
 	<!-- TodosStatus -->
-	<h2 id="list-heading">
-		{completedTodos} out of {totalTodos} items completed
-	</h2>
+	<TodosStatus bind:this={todosStatus} {todos} />
 
 	<!-- Todos -->
 	<ul role="list" class="todo-list stack-large" aria-labelledby="list-heading">
