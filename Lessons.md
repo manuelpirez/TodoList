@@ -41,3 +41,11 @@ In the meantime, we saw a few advanced Svelte techniques, like:
 -   Forcing Svelte to resolve pending state changes with the tick() function
 -   Adding functionality to HTML elements in a reusable and declarative way with the use:action directive
 -   Accessing component methods using bind:this={component} (binding components)
+
+# Session 4 Summary 
+
+In this session we added two new features: an Alert component and persisting todos to web storage.
+
+-   This allowed us to showcase some advanced Svelte techniques. We developed the Alert component to show how to implement cross-component state management using stores. We also saw how to auto-subscribe to stores to seamlessly integrate them with the Svelte reactivity system.
+-   Then we saw how to implement our own store from scratch, and also how to extend Svelte's writable store to persist data to web storage.
+-   At the end we had a look at using the Svelte transition directive to implement animations on DOM elements.
