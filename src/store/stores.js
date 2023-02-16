@@ -6,7 +6,7 @@ import { writable } from 'svelte/store';
  * Use writable to create a new store called alert.
  * Assign an initial String value
  * We then export the store.
- * @type {Writable<string>}
+ * @type {string}
  */
 export const alert = writable('Welcome to the to-do list app!');
 

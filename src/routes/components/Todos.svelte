@@ -1,3 +1,8 @@
+<style>
+	.container{
+		padding: 10px 10px 20px 10px;
+	}
+</style>
 <script>
 	import FilterButton from './FilterButton.svelte';
 	import Todo from './Todo.svelte';
@@ -89,7 +94,7 @@
 	};
 </script>
 <!-- Todos.svelte -->
-<div class="todoapp stack-large">
+<div class="container">
 	<!-- NewTodo -->
 	<NewTodo autofocus on:addTodo={(e) => addTask(e.detail)} />
 
@@ -104,7 +109,7 @@
 	<TodosStatus bind:this={todosStatus} {todos} />
 
 	<!-- Todos -->
-	<ul role="list" class="todo-list stack-large" aria-labelledby="list-heading">
+	<ul class="todo-list stack-large" aria-labelledby="list-heading">
 		<!-- The second parameter, (todo.id) will contain the index of the current item. Also, a key expression can be provided, which will uniquely identify each item. Svelte will use it to diff the list when data changes, rather than adding or removing items at the end, and it's a good practice to always specify one. -->
 		{#each filterTodos(filter, todos) as todo (todo.id)}
 			<li class="todo">

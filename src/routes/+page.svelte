@@ -3,6 +3,7 @@
     import Todos from "./components/Todos.svelte";
     import Alert from "./components/Alert.svelte";
     import {todos} from "./services/todoListService.js";
+    import Hobbies from "./components/Hobbies.svelte";
 
     // First we need some way for our Todos component to give back the updated to-dos to its parent.
     // We could emit an updated event with the list of to-dos,
@@ -29,3 +30,4 @@
     Everytime todos updates the variable it will get updated here as well-->
 <!-- Session 3 part 2 (stores): change the var to use the $ syntax-->
 <Todos bind:todos={$todos}/>
+<Hobbies/>

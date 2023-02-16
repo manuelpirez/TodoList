@@ -20,7 +20,6 @@
 		nameEl.focus(); // give focus to the name input
 	};
 
-	console.log('initializing:', nameEl);
 	onMount(() => autofocus && nameEl.focus()); // if autofocus is true, we run nameEl.focus()
 </script>
 
@@ -37,10 +36,10 @@
 	<input
 		bind:value={name}
 		bind:this={nameEl}
+		autoComplete="off"
 		use:selectOnFocus
 		type="text"
 		id="todo-0"
-		autoComplete="off"
 		class="input input__lg"
 	/>
 	<!-- bind:this Now we want the <input>element of the NewTodo component to re-gain focus every 
