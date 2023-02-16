@@ -1,9 +1,9 @@
 <script>
+    //import {hasLocalStorage} from "../util/envDetails.js";
     import Todos from "./components/Todos.svelte";
     import Alert from "./components/Alert.svelte";
-    import {hasLocalStorage} from "../util/envDetails.js";
+    import {todos} from "./services/todoListService.js";
 
-    import {todos} from "./../store/stores.js";
     // First we need some way for our Todos component to give back the updated to-dos to its parent.
     // We could emit an updated event with the list of to-dos,
     // but it's easier just to bind the todos variable.
@@ -18,7 +18,7 @@
     // $: console.log('todos', todos)
     // console.log('todos store - todos:', todos)
     // console.log('todos store content - $todos:', $todos)
-    console.log(hasLocalStorage && localStorage.getItem('svelte-local-todo-list'))
+    //console.log(hasLocalStorage && localStorage.getItem('todo_list'))
 </script>
 
 <Alert/>

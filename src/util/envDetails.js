@@ -1,3 +1,9 @@
-// Describe functions to validate compiler enviroment
+// Describe functions to validate compiler environment
 
-export const hasLocalStorage = typeof localStorage !== 'undefined';
+/**
+ * Checks if the browser has support for localStorage
+ * @type {boolean}
+ */
+const hasLocalStorage = typeof localStorage !== 'undefined';
+
+export { hasLocalStorage };
